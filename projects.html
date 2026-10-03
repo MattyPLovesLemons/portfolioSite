@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!--<link rel="stylesheet" href="css/style.css"> -->
+    <title>Portfolio Website</title>
+</head>
+<body>
+       <nav>
+        <div class="nav-container">
+            <div class="logo"> 
+                <span>Matt Piaskoski</span>
+            </div>
+            <div class="links">
+                <div class="link"><a href="index.html">Home</a></div>
+                <div class="link"><a href="projects.html"class="active">Projects</a></div>
+                <div class="link"><a href="#">Education</a></div>
+                <div class="link"> <a href="#">Experience</a></div>
+                <div class="link"><a href="#">Contact</a></div>
+                <i class="fa-solid fa-xmark cancel" onclick="cancel()"></i>
+            </div>
+            <i class="fa-solid fa-bars hamburg" onclick="hamburg()"></i>
+        </div>
+          <div class="dropdown" id="dropdownMenu">
+            <div class="links">
+                <a href="index.html">Home</a>
+                <a href="projects.html"class="active">Projects</a>
+                <a href="#">Education</a>
+                <a href="#">Experience</a>
+                <a href="#">Contact</a>
+                <i class="fa-solid fa-xmark cancel" onclick="cancel()"></i>
+            </div>
+          </div>
+        </nav>
+       
+    <section class="projectMain">
+      <p>Projects</p>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

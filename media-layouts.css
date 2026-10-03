@@ -1,0 +1,152 @@
+/* ==========================================================================
+   Extra image layouts for the project pages.
+   Load AFTER styles.css:  <link rel="stylesheet" href="media-layouts.css">
+
+   1. .media-grid        A grid of images (2x2 by default)
+   2. .strip             A row of smaller images you scroll/swipe, with arrows
+   3. .strip--belt       The same row, but it moves on its own like a conveyor belt
+   ========================================================================== */
+
+:root {
+  --media-gap: 2px;                 /* space between images */
+  --thumb-w: clamp(7rem, 42vw, 16rem);
+  --thumb-ratio: 4 / 3;
+}
+
+@media (min-width: 900px) {
+  :root { --thumb-w: clamp(7rem, 11vw, 16rem); }
+}
+
+/* Space between stacked blocks inside a project */
+.media-grid,
+.strip { margin-top: var(--media-gap); }
+
+.project > .media-grid:first-child,
+.project > .strip:first-child { margin-top: 0; }
+
+/* ==========================================================================
+   1. Grid
+   Change columns per grid:  style="--grid-cols: 3"
+   Change cell shape:        style="--ratio: 4 / 3"
+   ========================================================================== */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 2), minmax(0, 1fr));
+  gap: var(--media-gap);
+}
+
+.media-grid .media,
+.media-grid .media.is-missing { aspect-ratio: var(--ratio, 1); }
+
+.media-grid .media img {
+  height: 100%;
+  object-fit: cover;               /* crops to fill each cell; remove for uncropped images */
+}
+
+/* Optional: one image spans the full width, e.g. 1 big + 2 small */
+.media-grid .media--wide,
+.media-grid .media--wide.is-missing {
+  grid-column: 1 / -1;
+  aspect-ratio: var(--ratio-wide, 7 / 5);
+}
+
+/* ==========================================================================
+   2. Strip (manual carousel). Arrows are added by media-layouts.js
+   Thumbnail width:  style="--thumb-w: 10rem"
+   Thumbnail shape:  style="--thumb-ratio: 1 / 1"
+   ========================================================================== */
+.strip { position: relative; }
+
+.strip__track {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.strip__track::-webkit-scrollbar { display: none; }
+
+.strip .media,
+.strip .media.is-missing {
+  flex: none;
+  width: var(--thumb-w);
+  aspect-ratio: var(--thumb-ratio);
+  margin-right: var(--media-gap);
+  scroll-snap-align: start;
+}
+
+.strip .media img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.strip .media.is-missing::after {
+  padding: 0.5rem;
+  font-size: 0.7rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Arrow buttons and the belt's pause button */
+.strip__btn,
+.strip__pause {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: rgba(23, 23, 23, 0.85);
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+.strip__btn:hover,
+.strip__pause:hover { background: rgba(23, 23, 23, 0.97); }
+
+.strip__btn {
+  top: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  transform: translateY(-50%);
+  font-size: 1rem;
+}
+.strip__btn--prev { left: 0.5rem; }
+.strip__btn--next { right: 0.5rem; }
+.strip__btn:disabled { opacity: 0; pointer-events: none; }
+
+@media (min-width: 900px) {
+  /* keep the left arrow clear of the fold in the middle of the spread */
+  .strip__btn--prev { left: clamp(1rem, 3.5vw, 3rem); }
+}
+
+/* ==========================================================================
+   3. Conveyor belt
+   Speed in pixels per second:  data-speed="60"   (default 40)
+   The JS adds .is-running; without JS this just behaves like a normal strip.
+   ========================================================================== */
+@keyframes belt {
+  to { transform: translateX(-50%); }
+}
+
+.strip--belt.is-running { overflow: hidden; }
+
+.strip--belt.is-running .strip__track {
+  width: max-content;
+  overflow: visible;
+  scroll-snap-type: none;
+  animation: belt 60s linear infinite;   /* duration is set by the JS from data-speed */
+}
+
+.strip--belt.is-running:hover .strip__track,
+.strip--belt.is-running.is-paused .strip__track { animation-play-state: paused; }
+
+.strip__pause {
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
